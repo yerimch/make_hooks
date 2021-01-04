@@ -16,7 +16,7 @@ const App = () => {
 };
 
 /*
-  class App extends React.Component{
+  class Appugly extends React.Component{
   state={
     cnt:1
   };
@@ -38,5 +38,6 @@ const App = () => {
 }
 */
 
+export default App;
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
