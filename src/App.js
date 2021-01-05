@@ -2,26 +2,28 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
-const usePreventLeave = () => {
-  const listener = (event) => {
-    event.preventDefault();
-    event.returnValue = "";
+const useBeforeLeave = (onBefore) => {
+  if (typeof onBefore !== "function") {
+    return;
+  }
+  const handle = (event) => {
+    const { clientY } = event;
+    if (clientY <= 0) onBefore();
   };
-  const enablePrevent = () => {
-    window.addEventListener("beforeunload", listener);
-  };
-  const disablePrevent = () => {
-    window.removeEventListener("beforeunload", listener);
-  };
-  return { enablePrevent, disablePrevent };
+  useEffect(() => {
+    document.addEventListener("mouseleave", handle);
+    return () => document.removeEventListener("mouseleave", handle);
+  }, []);
 };
 
 const App = () => {
-  const { enablePrevent, disablePrevent } = usePreventLeave();
+  const begForLife = () => {
+    console.log("pls dont leave");
+  };
+  useBeforeLeave(begForLife);
   return (
     <div className="App">
-      <button onClick={enablePrevent}>Protect</button>
-      <button onClick={disablePrevent}>Unprotect</button>
+      <h1>Hello</h1>
     </div>
   );
 };
@@ -74,4 +76,9 @@ usePreventLeave의 return값의 이름은 같아야함
 protect button click시 window는 beforeunload event를 가지고 preventDefault()를 시행
 chorme의 경우는 event.returnValue=""를 꼭 넣어줘야 함
 beforeunload는 window가 닫히기 전에 function실행을 허락한다
+*/
+
+/*
+mouse가 page를 벗어날때 alart
+console.log(event)를 활용해 마우스의 좌표를 확인 한 후 위로 벗어날때만 alert하도록 설정
 */
