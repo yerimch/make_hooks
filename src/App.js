@@ -2,32 +2,29 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
-const useClick = (onClick) => {
-  if (typeof onClick != "function") {
+const useConfirm = (message = "", callback, rejection) => {
+  if (typeof callback !== "function") {
     return;
   }
-  const element = useRef();
-  useEffect(() => {
-    if (element.current) {
-      element.current.addEventListener("click", onClick);
+  const confirmAction = () => {
+    if (confirm(message)) {
+      callback();
+    } else {
+      rejection();
     }
-    return () => {
-      if (element.current) {
-        element.current.removeEventListener("click", onClick);
-      }
-    };
-  }, []);
-  return element;
+  };
+  return confirmAction;
 };
 
 const App = () => {
-  const sayHello = () => {
-    console.log("say hello");
+  const deleteWorld = () => {
+    console.log("deleting...");
   };
-  const title = useClick(sayHello);
+  const abort = () => console.log("Aborted");
+  const confirmDelete = useConfirm("Are you sure", deleteWorld, abort);
   return (
     <div className="App">
-      <h1 ref={title}>Hi</h1>
+      <button onClick={confirmDelete}>Delete the world</button>
     </div>
   );
 };
@@ -68,4 +65,8 @@ reference value.focus()시 getElementbyID와 비슷한 효과 <-해당 element�
 useEffect는 Unmount시에도 동작한다.->이때 eventlistner를 지워 줘야함
 return시 function을 반환 해주는데 이때 정리할 component에 의해 호출되어야 한다.
 deps에 빈 list를 안넣어놓으면 매 update시마다 eventlistener가 추가되므로 꼭 설정해야 함
+*/
+
+/*
+!==는 !=보다 strict한 비교(변수 type 비교)
 */
