@@ -3,7 +3,10 @@ import ReactDOM from "react-dom";
 import "./styles.css";
 
 const useConfirm = (message = "", callback, rejection) => {
-  if (typeof callback !== "function") {
+  if (callback && typeof callback !== "function") {
+    return;
+  }
+  if (rejection && typeof rejection !== "function") {
     return;
   }
   const confirmAction = () => {
