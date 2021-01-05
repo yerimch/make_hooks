@@ -2,21 +2,20 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
-const App = () => {
-  const sayHello = () => {
-    console.log("hello");
+const useTitle = (initialTitle) => {
+  const [title, setTitle] = useState(initialTitle);
+  const updateTitle = () => {
+    const htmlTitle = document.querySelector("title");
+    htmlTitle.innerText = title;
   };
-  const [number, setNumber] = useState(0);
-  const [aNumber, setAnumber] = useState(0);
-  useEffect(() => {
-    sayHello();
-  }, [number]);
-  return (
-    <div className="App">
-      <button onClick={() => setNumber(number + 1)}>{number}</button>
-      <button onClick={() => setAnumber(aNumber + 1)}>{aNumber}</button>
-    </div>
-  );
+  useEffect(updateTitle, [title]);
+  return setTitle;
+};
+
+const App = () => {
+  const titleUpdater = useTitle("Loading...");
+  setTimeout(() => titleUpdater("HOME"), 5000);
+  return <div className="App"></div>;
 };
 
 export default App;
