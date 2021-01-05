@@ -2,19 +2,40 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
+const useClick = (onClick) => {
+  if (typeof onClick != "function") {
+    return;
+  }
+  const element = useRef();
+  useEffect(() => {
+    if (element.current) {
+      element.current.addEventListener("click", onClick);
+    }
+    return () => {
+      if (element.current) {
+        element.current.removeEventListener("click", onClick);
+      }
+    };
+  }, []);
+  return element;
+};
+
 const App = () => {
-  const temp = useRef();
-  setTimeout(() => temp.current.focus(), 5000);
+  const sayHello = () => {
+    console.log("say hello");
+  };
+  const title = useClick(sayHello);
   return (
     <div className="App">
-      <input ref={temp} placeholder="default" />
+      <h1 ref={title}>Hi</h1>
     </div>
   );
 };
 
-export default App;
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
+
+export default App;
 
 /*
 line 18 value={name.value}의 이해
@@ -44,4 +65,7 @@ return시 componentWillUnmount 함수를 return한다.
 reference는 component의 한 부분을 선택 할 수 있는 방법
 react의 모든 component는 reference element를 가지고 있음
 reference value.focus()시 getElementbyID와 비슷한 효과 <-해당 element로 이동
+useEffect는 Unmount시에도 동작한다.->이때 eventlistner를 지워 줘야함
+return시 function을 반환 해주는데 이때 정리할 component에 의해 호출되어야 한다.
+deps에 빈 list를 안넣어놓으면 매 update시마다 eventlistener가 추가되므로 꼭 설정해야 함
 */
