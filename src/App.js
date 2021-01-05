@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
-const useTitle = (initialTitle) => {
-  const [title, setTitle] = useState(initialTitle);
-  const updateTitle = () => {
-    const htmlTitle = document.querySelector("title");
-    htmlTitle.innerText = title;
-  };
-  useEffect(updateTitle, [title]);
-  return setTitle;
-};
-
 const App = () => {
-  const titleUpdater = useTitle("Loading...");
-  setTimeout(() => titleUpdater("HOME"), 5000);
-  return <div className="App"></div>;
+  const temp = useRef();
+  setTimeout(() => temp.current.focus(), 5000);
+  return (
+    <div className="App">
+      <input ref={temp} placeholder="default" />
+    </div>
+  );
 };
 
 export default App;
@@ -44,4 +38,10 @@ useEffect의 인자는 두개 있음
 list에 있는 값이 선언 되고 나서 effect함수를 사용해야 적용된다!!!
 만약 빈 list를 전달하면 only mount, unmount시에만 실행
 return시 componentWillUnmount 함수를 return한다.
+*/
+
+/*
+reference는 component의 한 부분을 선택 할 수 있는 방법
+react의 모든 component는 reference element를 가지고 있음
+reference value.focus()시 getElementbyID와 비슷한 효과 <-해당 element로 이동
 */
