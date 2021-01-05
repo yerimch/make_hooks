@@ -2,42 +2,32 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
+const useInput = (initialValue) => {
+  const [value, setValue] = useState(initialValue);
+  const onChange = (event) => {
+    console.log(event.target);
+  };
+  return { value, onChange };
+};
+
 const App = () => {
-  const [item, setItem] = useState(1);
-  const incrementItem = () => setItem(item + 1);
-  const decrementItem = () => setItem(item - 1);
+  const name = useInput("Mr.");
   return (
     <div className="App">
-      <h1>{item}</h1>
-      <button onClick={incrementItem}>Increment</button>
-      <button onClick={decrementItem}>Decrement</button>
+      <h1>hello</h1>
+      <input placeholder="Name" {...name} />
     </div>
   );
 };
 
-/*
-  class Appugly extends React.Component{
-  state={
-    cnt:1
-  };
-  incrementItem =()=>{
-    this.setState({cnt:this.state.cnt+1});
-  }
-  decrementItem=()=>{
-    this.setState({cnt:this.state.cnt-1});
-  }
-  render(){
-    return(
-      <div>
-      <h1>{this.state.cnt}</h1>
-      <button onClick={this.incrementItem}>Increment</button>
-      <button onClick={this.decrementItem}>Decrement</button>
-      </div>
-    );
-  };
-}
-*/
-
 export default App;
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
+
+/*
+line 18 value={name.value}의 이해
+line 14의 name은 useInput의 return으로 value를 가지므로 name.value로 사용가능
+{..name}으로 대체 가능
+value={name.value} onChange={name.onChange}를 {..name} 하나로 전부 대체할수있음
+const name의 모든 값을 unpack해줌
+*/
