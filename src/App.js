@@ -2,32 +2,26 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
-const useConfirm = (message = "", callback, rejection) => {
-  if (!callback || typeof callback !== "function") {
-    return;
-  }
-  if (rejection && typeof rejection !== "function") {
-    return;
-  }
-  const confirmAction = () => {
-    if (confirm(message)) {
-      callback();
-    } else {
-      rejection();
-    }
+const usePreventLeave = () => {
+  const listener = (event) => {
+    event.preventDefault();
+    event.returnValue = "";
   };
-  return confirmAction;
+  const enablePrevent = () => {
+    window.addEventListener("beforeunload", listener);
+  };
+  const disablePrevent = () => {
+    window.removeEventListener("beforeunload", listener);
+  };
+  return { enablePrevent, disablePrevent };
 };
 
 const App = () => {
-  const deleteWorld = () => {
-    console.log("deleting...");
-  };
-  const abort = () => console.log("Aborted");
-  const confirmDelete = useConfirm("Are you sure", deleteWorld, abort);
+  const { enablePrevent, disablePrevent } = usePreventLeave();
   return (
     <div className="App">
-      <button onClick={confirmDelete}>Delete the world</button>
+      <button onClick={enablePrevent}>Protect</button>
+      <button onClick={disablePrevent}>Unprotect</button>
     </div>
   );
 };
@@ -72,4 +66,12 @@ deps에 빈 list를 안넣어놓으면 매 update시마다 eventlistener가 추�
 
 /*
 !==는 !=보다 strict한 비교(변수 type 비교)
+*/
+
+/*
+preventLeave save하지 않은채 벗어날때 경고 alert
+usePreventLeave의 return값의 이름은 같아야함
+protect button click시 window는 beforeunload event를 가지고 preventDefault()를 시행
+chorme의 경우는 event.returnValue=""를 꼭 넣어줘야 함
+beforeunload는 window가 닫히기 전에 function실행을 허락한다
 */
