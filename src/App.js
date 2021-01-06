@@ -2,23 +2,29 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
 
-const useScroll = () => {
-  const [state, setState] = useState({ x: 0, y: 0 });
-  const onScroll = () => {
-    setState({ y: window.scrollY, x: window.scrollX });
+const useNotification = (title, options) => {
+  if (!("Notification" in window)) {
+    return;
+  }
+  const fireNotif = () => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification(title, options);
+        } else return;
+      });
+    } else {
+      new Notification(title, options);
+    }
   };
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onscroll);
-  }, []);
-  return state;
+  return fireNotif;
 };
 
 const App = () => {
-  const { y } = useScroll();
+  const triggerNotif = useNotification("Hello", { body: "Hello 유림" });
   return (
     <div className="App" style={{ height: "1000vh " }}>
-      <h1 style={{ position: "fixed", color: y > 100 ? "red" : "blue" }}>Hi</h1>
+      <button onClick={triggerNotif}>show Hello</button>
     </div>
   );
 };
@@ -76,4 +82,11 @@ beforeunload는 window가 닫히기 전에 function실행을 허락한다
 /*
 mouse가 page를 벗어날때 alart
 console.log(event)를 활용해 마우스의 좌표를 확인 한 후 위로 벗어날때만 alert하도록 설정
+*/
+
+/*
+fullscreen은 호환성 문제 때문에 많은 if/else가 필요함
+firefox->mozRequestFullScreen
+opera->webkit
+microsoft->ms
 */
