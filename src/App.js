@@ -1,30 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
-
-const useNotification = (title, options) => {
-  if (!("Notification" in window)) {
-    return;
-  }
-  const fireNotif = () => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          new Notification(title, options);
-        } else return;
-      });
-    } else {
-      new Notification(title, options);
-    }
-  };
-  return fireNotif;
-};
+import useAxios from "./useAxios";
 
 const App = () => {
-  const triggerNotif = useNotification("Hello", { body: "Hello 유림" });
+  const { loading, data, error, refetch } = useAxios({
+    url:
+      "https://cors-anywhere.herokuapp.com/https://yts.am/api/v2/list_movies.json"
+  });
+  console.log(
+    `loading: ${loading}\n error: ${error}\n data: ${JSON.stringify(data)}`
+  );
   return (
     <div className="App" style={{ height: "1000vh " }}>
-      <button onClick={triggerNotif}>show Hello</button>
+      <h1>{data && data.status}</h1>
+      <h2>{loading && "Loading"}</h2>
+      <button onClick={refetch}>Refetch</button>
     </div>
   );
 };
